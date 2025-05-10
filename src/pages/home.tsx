@@ -2,16 +2,18 @@ import { Box, Button, Container } from '@mui/material';
 import HeroSection from '../components/heroSection';
 import SectionHeading from '../components/sectionHeading';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../redux/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchTrendingMovies } from '../redux/slices/trendingMoviesSlice';
 import MovieCardSlider from '../components/movieCardSlider';
 import { fetchFeaturedMovies } from '../redux/slices/featuredMoviesSlice';
 
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const {
     movies: trendingMovies,
     status: trendingMoviesStatus,
@@ -25,6 +27,16 @@ const Home = () => {
     error: featuredMoviesError,
   } = useSelector((state: RootState) => state.featuredMovies);
 
+  const handleSearchKeywordChange = (value: any) => {
+    setSearchTerm(value);
+  };
+
+  const handleSearchSubmit = (keyword: string) => {
+    if (keyword.trim() !== '') {
+      // Navigate to browse page with search query param
+      navigate(`/browse-movies?search=${encodeURIComponent(keyword)}`);
+    }
+  };
   // Fetch movies when component mounts
   useEffect(() => {
     if (trendingMoviesStatus === 'idle' || trendingMoviesStatus === 'failed') {
@@ -51,7 +63,11 @@ const Home = () => {
   return (
     <>
       <Container disableGutters maxWidth={false} sx={{ mb: 8 }}>
-        <HeroSection />
+        <HeroSection
+          searchTerm={searchTerm}
+          onChangeKeyword={handleSearchKeywordChange}
+          onSubmit={handleSearchSubmit}
+        />
       </Container>
       <Container sx={{ mb: 8 }}>
         <Box

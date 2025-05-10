@@ -1,80 +1,118 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import {
-  Movie,
-  MovieResponse,
-  MovieFilters,
-  LoadingStatus,
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
+import {
+  type LoadingStatus,
+  type Movie,
+  type MovieListResponse,
 } from '../../types/movietypes';
+import axios from 'axios';
+
+const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
+const API_URL = import.meta.env.VITE_TMDB_URL;
+
+interface FetchKeywordParams {
+  keyword: string;
+  genre?: string;
+  year?: string;
+  ratings?: number | null;
+  page: number;
+}
 
 interface BrowseMoviesState {
   movies: Movie[];
   currentPage: number;
   totalPages: number;
-  filters: MovieFilters;
   status: LoadingStatus;
   error: string | null;
-}
-
-interface FetchBrowseMoviesArgs {
-  page?: number;
-  filters?: MovieFilters;
+  searchTerm: string;
+  searchGenre: string;
+  searchYear: string;
+  searchRatings: number | null;
 }
 
 const initialState: BrowseMoviesState = {
   movies: [],
   currentPage: 1,
   totalPages: 1,
-  filters: {},
   status: 'idle',
   error: null,
+  searchTerm: '',
+  searchGenre: '',
+  searchYear: '',
+  searchRatings: 0,
 };
 
 export const fetchBrowseMovies = createAsyncThunk<
-  MovieResponse,
-  FetchBrowseMoviesArgs,
+  MovieListResponse,
+  FetchKeywordParams,
   { rejectValue: string }
->(
-  'browseMovies/fetchBrowseMovies',
-  async (
-    { page = 1, filters = {} }: FetchBrowseMoviesArgs,
-    { rejectWithValue }
-  ) => {
-    try {
-      // Replace with your actual API call
-      // Add query parameters for pagination and filters
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        ...Object.entries(filters).reduce((acc, [key, value]) => {
-          acc[key] = value?.toString() || '';
-          return acc;
-        }, {} as Record<string, string>),
-      }).toString();
+>('browseMovies/fetchBrowseMovies', async (params, { rejectWithValue }) => {
+  const { keyword, page, genre, ratings, year } = params;
+  try {
+    // Use proper URL without API key in query string
+    // Create URL with base parameters
+    let completeURL = API_URL + `/discover/movie?page=${page}`;
 
-      const response = await fetch(`YOUR_API_URL/movies?${queryParams}`);
-      if (!response.ok) throw new Error('Failed to fetch movies');
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error instanceof Error ? error.message : 'Unknown error'
-      );
+    // Add keyword search if provided (using different endpoint)
+    if (keyword && keyword.trim() !== '') {
+      completeURL =
+        API_URL +
+        `/search/movie?query=${encodeURIComponent(keyword)}&page=${page}`;
     }
+
+    // Add other filter parameters if provided
+    if (genre && genre !== 'All') {
+      completeURL += `&with_genres=${genre}`;
+    }
+
+    if (year && year !== 'All') {
+      // You can specify release year with release_date parameters
+      completeURL += `&primary_release_year=${year}`;
+    }
+
+    if (ratings && ratings > 0) {
+      // For ratings filter (e.g., minimum vote average)
+      completeURL += `&vote_average.gte=${ratings}`;
+    }
+
+    // Sort by popularity
+    completeURL += '&sort_by=popularity.desc';
+
+    const response = await axios.get<MovieListResponse>(completeURL, {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'An error occurred';
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 const browseMoviesSlice = createSlice({
   name: 'browseMovies',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<MovieFilters>) => {
-      state.filters = action.payload;
-      state.currentPage = 1; // Reset to first page when filters change
-    },
-    clearFilters: (state) => {
-      state.filters = {};
+    clearSearchResults: (state) => {
+      state.movies = [];
+      state.currentPage = 1;
+      state.totalPages = 1;
+      state.status = 'idle';
+      state.error = null;
+      state.searchTerm = '';
     },
     setPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
+    },
+    setSearchKeyword: (state, action: PayloadAction<string>) => {
+      state.searchTerm = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -84,12 +122,24 @@ const browseMoviesSlice = createSlice({
       })
       .addCase(
         fetchBrowseMovies.fulfilled,
-        (state, action: PayloadAction<MovieResponse>) => {
+        (state, action: PayloadAction<MovieListResponse>) => {
           state.status = 'succeeded';
-          state.movies =
-            action.payload.results || (action.payload as unknown as Movie[]);
+          // If it's page 1, replace movies, otherwise append
+          if (action.payload.page === 1) {
+            state.movies = action.payload.results;
+          } else {
+            // Append new movies while avoiding duplicates
+            const newMovies = action.payload.results.filter(
+              (newMovie) =>
+                !state.movies.some(
+                  (existingMovie) => existingMovie.id === newMovie.id
+                )
+            );
+            state.movies = [...state.movies, ...newMovies];
+          }
+
+          state.currentPage = action.payload.page;
           state.totalPages = action.payload.total_pages || 1;
-          state.currentPage = action.payload.page || state.currentPage;
         }
       )
       .addCase(fetchBrowseMovies.rejected, (state, action) => {
@@ -99,5 +149,6 @@ const browseMoviesSlice = createSlice({
   },
 });
 
-export const { setFilters, clearFilters, setPage } = browseMoviesSlice.actions;
+export const { clearSearchResults, setPage, setSearchKeyword } =
+  browseMoviesSlice.actions;
 export default browseMoviesSlice.reducer;

@@ -32,7 +32,7 @@ function MovieCardGrid({ movies, loading, error }: any) {
         container
         spacing={3}
         sx={{
-          justifyContent: 'center',
+          justifyContent: 'start',
           alignItems: 'center',
         }}
       >

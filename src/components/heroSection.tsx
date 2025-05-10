@@ -7,14 +7,23 @@ import {
   useMediaQuery,
   Container,
   Paper,
-  alpha,
+  TextField,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  searchTerm: string;
+  onChangeKeyword: (keyword: string) => void;
+  onSubmit: (keyword: string) => void;
+}
+
+const HeroSection = ({
+  searchTerm,
+  onChangeKeyword,
+  onSubmit,
+}: HeroSectionProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Box
@@ -119,15 +128,23 @@ const HeroSection = () => {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           }}
         >
-          <InputBase
+          <TextField
+            placeholder="Search for a movie......"
+            value={searchTerm}
+            onChange={(e) => onChangeKeyword(e.target.value)}
             sx={{
               flex: 1,
               ml: 3,
               fontSize: { xs: '1rem', md: '1.1rem' },
-              py: { xs: 0.5, md: 0.75 },
+              py: 0,
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none',
+              },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 50,
+              },
             }}
-            placeholder="Search for a movie......"
-            inputProps={{ 'aria-label': 'search movies' }}
+            variant="outlined"
           />
           <Button
             variant="contained"
@@ -136,7 +153,7 @@ const HeroSection = () => {
             sx={{
               borderRadius: 50,
               px: { xs: 3, md: 4 },
-              py: { xs: 1, md: 1.2 },
+              py: { xs: 2, md: 2 },
               textTransform: 'none',
               fontSize: { xs: '0.9rem', md: '1rem' },
               backgroundColor: '#01b4e4', // TMDB-like teal color
@@ -144,6 +161,7 @@ const HeroSection = () => {
                 backgroundColor: '#0099c9',
               },
             }}
+            onClick={() => onSubmit(searchTerm)}
           >
             {isMobile ? <SearchIcon /> : 'Search'}
           </Button>

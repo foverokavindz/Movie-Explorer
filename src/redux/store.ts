@@ -3,21 +3,23 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import trendingMoviesReducer from './slices/trendingMoviesSlice';
 import featuredMoviesReducer from './slices/featuredMoviesSlice';
-// import browseMoviesReducer from './slices/browseMoviesSlice';
-// import watchlistReducer from './slices/watchlistSlice';
+import browseMoviesReducer from './slices/browseMoviesSlice';
+import watchlistReducer from './slices/watchlistSlice';
+import userReducer from './slices/userSlice';
 
-// Configure persistence
+// // Configure persistence
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['watchlist'], // Only persist watchlist by default
+  whitelist: ['watchlist', 'user'],
 };
 
 const rootReducer = combineReducers({
   trendingMovies: trendingMoviesReducer,
   featuredMovies: featuredMoviesReducer,
-  // browseMovies: browseMoviesReducer,
-  // watchlist: watchlistReducer,
+  browseMovies: browseMoviesReducer,
+  watchlist: watchlistReducer,
+  user: userReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

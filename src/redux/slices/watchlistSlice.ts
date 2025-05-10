@@ -1,8 +1,20 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Movie } from '../../types/movietypes';
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
+type MovieList = {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  vote_average: number;
+  genre_ids: number[];
+  popularity: number;
+  watchlistAdded: boolean;
+};
 interface WatchlistState {
-  movies: Movie[];
+  movies: MovieList[];
 }
 
 const initialState: WatchlistState = {
@@ -13,7 +25,7 @@ const watchlistSlice = createSlice({
   name: 'watchlist',
   initialState,
   reducers: {
-    addToWatchlist: (state, action: PayloadAction<Movie>) => {
+    addToWatchlist: (state, action: PayloadAction<MovieList>) => {
       const movie = action.payload;
       // Check if movie is already in watchlist to avoid duplicates
       if (!state.movies.some((item) => item.id === movie.id)) {

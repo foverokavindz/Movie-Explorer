@@ -12,10 +12,19 @@ import {
   Tooltip,
   useTheme,
   alpha,
+  Menu,
+  MenuItem,
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import { MoreVert, PlaylistAdd, PlaylistRemove } from '@mui/icons-material';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import type { AppDispatch } from '../redux/store';
+import {
+  addToWatchlist,
+  removeFromWatchlist,
+} from '../redux/slices/watchlistSlice';
 
 type MovieCardProps = {
   movie: {
@@ -28,11 +37,38 @@ type MovieCardProps = {
     vote_average: number;
     genre_ids: number[];
     popularity: number;
+    watchlistAdded?: boolean;
   };
 };
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAddToWatchlist = () => {
+    dispatch(addToWatchlist({ ...movie, watchlistAdded: true }));
+    handleClose();
+  };
+
+  const handleRemoveFromWatchlist = () => {
+    dispatch(removeFromWatchlist(movie.id));
+    handleClose();
+  };
+
+  const handleCardClick = () => {
+    navigate(`/movie-details/${movieData.id}`);
+  };
 
   // Default movie data if not provided
   const defaultMovie = {
@@ -102,7 +138,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
       }}
     >
       <Box sx={{ position: 'relative' }}>
-        <CardActionArea>
+        <CardActionArea onClick={handleCardClick}>
           {/* Movie Poster */}
           <CardMedia
             component="img"
@@ -134,6 +170,10 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             }}
           >
             <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                // Add trailer playing logic here if needed
+              }}
               sx={{
                 bgcolor: 'rgba(255,255,255,0.2)',
                 backdropFilter: 'blur(3px)',
@@ -172,21 +212,58 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               gap: 1,
             }}
           >
-            <Tooltip title="Add to watchlist">
+            <Tooltip title="Options">
               <IconButton
-                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick(e);
+                }}
+                size="large"
+                aria-controls={open ? 'options-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
                 sx={{
+                  color: 'white',
                   bgcolor: 'rgba(255,255,255,0.2)',
                   backdropFilter: 'blur(3px)',
-                  color: 'white',
                   '&:hover': {
                     bgcolor: alpha(theme.palette.primary.main, 0.7),
                   },
                 }}
               >
-                <BookmarkIcon fontSize="medium" />
+                <MoreVert />
               </IconButton>
             </Tooltip>
+            <Menu
+              id="options-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+              {movieData.watchlistAdded ? (
+                <MenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveFromWatchlist();
+                  }}
+                >
+                  <PlaylistRemove sx={{ mr: 1 }} />
+                  Remove from Watch List
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToWatchlist();
+                  }}
+                >
+                  <PlaylistAdd sx={{ mr: 1 }} />
+                  Add to Watch List
+                </MenuItem>
+              )}
+            </Menu>
           </Box>
         </CardActionArea>
       </Box>

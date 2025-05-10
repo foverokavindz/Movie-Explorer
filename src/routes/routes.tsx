@@ -3,12 +3,12 @@ import ProtectedRoute from './protectedRoute';
 import AppLayout from '../layout/appLayout';
 import AuthLayout from '../layout/authLayout';
 import Login from '../pages/auth/login';
-import Register from '../pages/auth/register';
 import Home from '../pages/home';
 import MovieDetails from '../pages/movieDetails';
 import TrendingMovies from '../pages/trendingMovies';
 import BrowseMovies from '../pages/browseMovies';
 import Watchlists from '../pages/bookmarks';
+import NotFound from '../pages/notFound';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
           { path: 'home', element: <Home /> },
           { path: 'trending', element: <TrendingMovies /> },
           { path: 'browse-movies', element: <BrowseMovies /> },
-          { path: 'movie-details', element: <MovieDetails /> },
+          { path: 'movie-details/:movieId', element: <MovieDetails /> },
           { path: 'watchlists', element: <Watchlists /> },
         ],
       },
@@ -34,7 +34,10 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/auth/login" replace /> },
       { path: 'login', element: <Login /> },
-      { path: 'register', element: <Register /> },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);

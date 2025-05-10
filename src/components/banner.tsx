@@ -33,7 +33,7 @@ const MovieBanner = ({ movie }: any) => {
       elevation={0}
       sx={{
         position: 'relative',
-        height: { xs: '450px', sm: '500px', md: '600px' },
+        height: { xs: '450px', sm: '500px', md: '100vh' },
         width: '100%',
         borderRadius: 0,
         overflow: 'hidden',

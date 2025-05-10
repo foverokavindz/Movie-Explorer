@@ -4,67 +4,19 @@ import {
   Toolbar,
   Typography,
   Box,
-  InputBase,
   IconButton,
-  Switch,
   Button,
-  alpha,
-  styled,
   Container,
   Menu,
   MenuItem,
   Tooltip,
   Avatar,
 } from '@mui/material';
-import {
-  Menu as MenuIcon,
-  VideoStable as AdbIcon,
-  Search as SearchIcon,
-  Brightness4 as DarkModeIcon,
-  Brightness7 as LightModeIcon,
-  Logout as LogoutIcon,
-} from '@mui/icons-material';
+import { Menu as MenuIcon, VideoStable as AdbIcon } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router';
-
-// Styled search component
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../redux/store';
+import { logoutUser } from '../redux/slices/userSlice';
 
 const pageRoutes = {
   Home: '/home',
@@ -96,6 +48,7 @@ const settings = ['Logout'];
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -110,6 +63,10 @@ const NavBar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleUserLogOut = () => {
+    dispatch(logoutUser());
+    handleCloseUserMenu();
   };
 
   return (
@@ -131,8 +88,8 @@ const NavBar = () => {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
+              component={RouterLink}
+              to={'/home'}
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -196,8 +153,8 @@ const NavBar = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={RouterLink}
+            to={'/home'}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -265,7 +222,7 @@ const NavBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleUserLogOut}>
                   <Typography sx={{ textAlign: 'center' }}>
                     {setting}
                   </Typography>

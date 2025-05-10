@@ -1,24 +1,93 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router';
+import {
+  Box,
+  Container,
+  Paper,
+  useTheme,
+  useMediaQuery,
+  Typography,
+} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { VideoStable as AdbIcon } from '@mui/icons-material';
 
 const AuthLayout = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center bg-gray-50 `}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'grey.100',
+        px: 2,
+        py: { xs: 2, sm: 4 },
+      }}
     >
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-        <Suspense fallback={<LoadingFallback />}>
-          <Outlet />
-        </Suspense>
-      </div>
-    </div>
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{
+          px: 2,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mb: 5,
+          }}
+        >
+          <AdbIcon sx={{ mr: 1, height: '100%', alignSelf: 'center' }} />
+          <Typography
+            variant="h4"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: 'flex',
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.1rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              lineHeight: 1,
+            }}
+          >
+            Movie Explorer
+          </Typography>
+        </Box>
+        <Paper
+          elevation={3}
+          sx={{
+            mt: { xs: 2, sm: 4, md: 6 },
+            p: { xs: 2, sm: 3, md: 4 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderRadius: { xs: 1, sm: 2 },
+          }}
+        >
+          <Suspense fallback={<LoadingFallback isMobile={isMobile} />}>
+            <Outlet />
+          </Suspense>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 
 export default AuthLayout;
 
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center p-4">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-  </div>
+const LoadingFallback = ({ isMobile }: { isMobile: boolean }) => (
+  <Box display="flex" justifyContent="center" alignItems="center" p={2}>
+    <CircularProgress size={isMobile ? 30 : 40} />
+  </Box>
 );

@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   type PayloadAction,
 } from '@reduxjs/toolkit';
+import axios from 'axios';
 import type {
   LoadingStatus,
   Movie,
@@ -10,9 +11,8 @@ import type {
   TimeWindow,
 } from '../../types/movietypes';
 
-const API_TOKEN =
-  'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNDk4M2ZlYjY3N2NmNTljMWVhMjFhNDY3ODM5MDY1NiIsIm5iZiI6MTc0NjcxNzQ4NC4wNTYsInN1YiI6IjY4MWNjYjJjMjQzNzU5MDY0MDNlYzk2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6ZZ8Lvy_fHegU5JYUD7RhSGkFs_Idfu6wRxOBH_Fo_I'; // Replace with your actual API key
-
+const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
+const API_URL = import.meta.env.VITE_TMDB_URL;
 // Define fetch parameters type
 interface FetchTrendingParams {
   timeWindow: TimeWindow;
@@ -45,26 +45,20 @@ export const fetchTrendingMovies = createAsyncThunk<
   const { timeWindow, page } = params;
 
   try {
-    // Use proper URL without API key in query string
-    const apiUrl = `https://api.themoviedb.org/3/trending/movie/${timeWindow}?page=${page}`;
+    const completeURL = API_URL + `/trending/movie/${timeWindow}?page=${page}`;
 
-    // Use fetch with Authorization header
-    const response = await fetch(apiUrl, {
-      method: 'GET',
+    const response = await axios.get<MovieListResponse>(completeURL, {
       headers: {
         Authorization: `Bearer ${API_TOKEN}`,
         'Content-Type': 'application/json',
       },
     });
 
-    if (!response.ok) throw new Error('Failed to fetch trending movies');
-
-    const data: MovieListResponse = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
-    return rejectWithValue(
-      error instanceof Error ? error.message : 'Unknown error'
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : 'An error occurred';
+    return rejectWithValue(errorMessage);
   }
 });
 
