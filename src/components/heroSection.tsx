@@ -1,7 +1,6 @@
 import {
   Box,
   Typography,
-  InputBase,
   Button,
   useTheme,
   useMediaQuery,

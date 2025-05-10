@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import MovieCardGrid from '../components/movieCardGrid';
 import SectionHeading from '../components/sectionHeading';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { TimeWindow } from '../types/movietypes';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../redux/store';
@@ -36,7 +36,7 @@ const TrendingMovies = () => {
 
   // Handle time window change
   const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _: React.MouseEvent<HTMLElement>,
     newTimeWindow: TimeWindow | null
   ) => {
     // Prevent deselecting both options

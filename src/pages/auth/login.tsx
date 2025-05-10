@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Paper,
-  Avatar,
-  Link,
-} from '@mui/material';
+import { Box, TextField, Button, Typography, Avatar } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link as RouterLink, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/userSlice';
 

@@ -1,15 +1,12 @@
 import {
   Box,
   Button,
-  Checkbox,
   Chip,
   Container,
   Divider,
   FormControl,
   Grid,
   InputLabel,
-  List,
-  ListItem,
   MenuItem,
   Paper,
   Popover,
@@ -33,7 +30,7 @@ import {
 } from '../redux/slices/browseMoviesSlice';
 import type { Movie } from '../types/movietypes';
 import TuneIcon from '@mui/icons-material/Tune';
-import { useLocation, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 const GENRES = [
   { id: 28, name: 'Action' },

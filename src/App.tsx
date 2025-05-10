@@ -12,7 +12,6 @@ function App() {
         containerClassName=""
         containerStyle={{}}
         toastOptions={{
-          // Define default options
           className: '',
         }}
       />
