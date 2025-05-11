@@ -6,6 +6,7 @@ const AppLayout = () => {
   return (
     <main>
       <NavBar />
+
       <Suspense fallback={<LoadingFallback />}>
         <Outlet />
       </Suspense>

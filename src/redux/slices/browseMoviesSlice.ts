@@ -9,6 +9,7 @@ import {
   type MovieListResponse,
 } from '../../types/movietypes';
 import axios from 'axios';
+import { showToast } from '../../utils/toast';
 
 const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 const API_URL = import.meta.env.VITE_TMDB_URL;
@@ -45,6 +46,7 @@ const initialState: BrowseMoviesState = {
   searchRatings: 0,
 };
 
+// This function fetches movies from the TMDB API based on the specified keyword and other filters
 export const fetchBrowseMovies = createAsyncThunk<
   MovieListResponse,
   FetchKeywordParams,
@@ -52,11 +54,9 @@ export const fetchBrowseMovies = createAsyncThunk<
 >('browseMovies/fetchBrowseMovies', async (params, { rejectWithValue }) => {
   const { keyword, page, genre, ratings, year } = params;
   try {
-    // Use proper URL without API key in query string
-    // Create URL with base parameters
     let completeURL = API_URL + `/discover/movie?page=${page}`;
 
-    // Add keyword search if provided (using different endpoint)
+    // Add keyword search if provided
     if (keyword && keyword.trim() !== '') {
       completeURL =
         API_URL +
@@ -69,12 +69,12 @@ export const fetchBrowseMovies = createAsyncThunk<
     }
 
     if (year && year !== 'All') {
-      // You can specify release year with release_date parameters
+      // specify release year with release_date parameters
       completeURL += `&primary_release_year=${year}`;
     }
 
     if (ratings && ratings > 0) {
-      // For ratings filter (e.g., minimum vote average)
+      // For ratings filter
       completeURL += `&vote_average.gte=${ratings}`;
     }
 
@@ -96,6 +96,7 @@ export const fetchBrowseMovies = createAsyncThunk<
   }
 });
 
+//
 const browseMoviesSlice = createSlice({
   name: 'browseMovies',
   initialState,
@@ -119,10 +120,12 @@ const browseMoviesSlice = createSlice({
     builder
       .addCase(fetchBrowseMovies.pending, (state) => {
         state.status = 'loading';
+        showToast.loading('Searching...');
       })
       .addCase(
         fetchBrowseMovies.fulfilled,
         (state, action: PayloadAction<MovieListResponse>) => {
+          showToast.success('Movies loaded successfully');
           state.status = 'succeeded';
           // If it's page 1, replace movies, otherwise append
           if (action.payload.page === 1) {
@@ -145,6 +148,9 @@ const browseMoviesSlice = createSlice({
       .addCase(fetchBrowseMovies.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'Failed to fetch movies';
+        showToast.error(
+          action.payload || 'Failed to fetch movies, please try again'
+        );
       });
   },
 });

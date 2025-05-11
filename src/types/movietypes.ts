@@ -34,8 +34,3 @@ export type MovieListResponse = {
 };
 
 export type TimeWindow = 'day' | 'week';
-
-// export enum TimeWindowEnum {
-//   DAY = 'day',
-//   WEEK = 'week',
-// }

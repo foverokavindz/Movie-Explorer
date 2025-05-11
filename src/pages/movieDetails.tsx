@@ -34,8 +34,8 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../redux/store';
 import { addToWatchlist } from '../redux/slices/watchlistSlice';
 import { getGenreName } from '../utils/movieData';
+import { showToast } from '../utils/toast';
 
-// Interfaces for component state
 interface MovieDetailsState {
   id: number;
   title: string;
@@ -72,8 +72,6 @@ const MovieDetails = () => {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
-  // Separate state objects for each type of data
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -125,6 +123,7 @@ const MovieDetails = () => {
       } catch (err) {
         console.error('Error fetching movie data:', err);
         setError('Failed to load movie data. Please try again later.');
+        showToast.error('Failed to load movie data. Please try again later.');
       } finally {
         setLoading(false);
       }

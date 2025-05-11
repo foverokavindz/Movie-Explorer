@@ -31,6 +31,7 @@ interface CastMemberResponse {
   order: number;
 }
 
+// This function fetches detailed information about a specific movie using its ID
 export const getMovieDetails = async (
   movieId: number
 ): Promise<MovieDetailsResponse> => {
@@ -84,6 +85,7 @@ export const getMovieDetails = async (
   }
 };
 
+// This function fetches the cast members of a specific movie using its ID
 export const getMovieCast = async (
   movieId: number
 ): Promise<CastMemberResponse[]> => {
@@ -115,6 +117,7 @@ export const getMovieCast = async (
   }
 };
 
+// This function fetches the trailer for a specific movie using its ID
 export const getMovieTrailer = async (
   movieId: number
 ): Promise<string | null> => {

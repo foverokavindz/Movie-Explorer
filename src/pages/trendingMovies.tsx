@@ -17,12 +17,10 @@ import {
 } from '../redux/slices/trendingMoviesSlice';
 
 const TrendingMovies = () => {
-  // Use AppDispatch instead of plain dispatch
   const dispatch = useDispatch<AppDispatch>();
   const { movies, status, error, currentPage, totalPages, timeWindow } =
     useSelector((state: RootState) => state.trendingMovies);
 
-  // Fetch movies when component mounts
   useEffect(() => {
     if (status === 'idle' || status === 'failed') {
       dispatch(
@@ -73,7 +71,7 @@ const TrendingMovies = () => {
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <ToggleButtonGroup
             color="primary"
-            value={timeWindow} // Use Redux state, not local state
+            value={timeWindow}
             exclusive
             onChange={handleChange}
             aria-label="Time Window"
@@ -112,7 +110,7 @@ const TrendingMovies = () => {
       >
         <ToggleButtonGroup
           color="primary"
-          value={timeWindow} // Use Redux state, not local state
+          value={timeWindow}
           exclusive
           onChange={handleChange}
           aria-label="Time Window"

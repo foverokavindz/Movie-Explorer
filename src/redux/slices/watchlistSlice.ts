@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { showToast } from '../../utils/toast';
 
 type MovieList = {
   id: number;
@@ -31,10 +32,12 @@ const watchlistSlice = createSlice({
       if (!state.movies.some((item) => item.id === movie.id)) {
         state.movies.push(movie);
       }
+      showToast.success('Added to watchlist');
     },
     removeFromWatchlist: (state, action: PayloadAction<number>) => {
       const movieId = action.payload;
       state.movies = state.movies.filter((movie) => movie.id !== movieId);
+      showToast.success('Removed from watchlist');
     },
     clearWatchlist: (state) => {
       state.movies = [];

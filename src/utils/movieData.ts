@@ -25,23 +25,27 @@ const getGenreName = (genreId: number) => {
   return genreMap[genreId] || 'Unknown';
 };
 
-// Function to get primary genre for a movie
-const getPrimaryGenre = (genreIds: any) => {
-  if (!genreIds || genreIds.length === 0) return 'Unknown';
-  return getGenreName(genreIds[0]);
-};
-
-// Function to format the poster URL
-const getPosterUrl = (posterPath: any) => {
-  if (!posterPath) return '/placeholder-poster.jpg';
-  return `https://image.tmdb.org/t/p/w500${posterPath}`;
-};
-
-// Function to format the backdrop URL
-const getBackdropUrl = (backdropPath: any) => {
-  if (!backdropPath) return '/placeholder-backdrop.jpg';
-  return `https://image.tmdb.org/t/p/original${backdropPath}`;
-};
+const GENRES = [
+  { id: 28, name: 'Action' },
+  { id: 12, name: 'Adventure' },
+  { id: 16, name: 'Animation' },
+  { id: 35, name: 'Comedy' },
+  { id: 80, name: 'Crime' },
+  { id: 99, name: 'Documentary' },
+  { id: 18, name: 'Drama' },
+  { id: 10751, name: 'Family' },
+  { id: 14, name: 'Fantasy' },
+  { id: 36, name: 'History' },
+  { id: 27, name: 'Horror' },
+  { id: 10402, name: 'Music' },
+  { id: 9648, name: 'Mystery' },
+  { id: 10749, name: 'Romance' },
+  { id: 878, name: 'Sci-Fi' },
+  { id: 10770, name: 'TV Movie' },
+  { id: 53, name: 'Thriller' },
+  { id: 10752, name: 'War' },
+  { id: 37, name: 'Western' },
+];
 
 // Export the data and helper functions
-export { getGenreName, getPrimaryGenre, getPosterUrl, getBackdropUrl };
+export { getGenreName, GENRES };

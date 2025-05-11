@@ -9,6 +9,7 @@ import type {
   MovieListResponse,
 } from '../../types/movietypes';
 import axios from 'axios';
+import { showToast } from '../../utils/toast';
 
 const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 const API_URL = import.meta.env.VITE_TMDB_URL;
@@ -32,6 +33,7 @@ const initialState: FeaturedMoviesState = {
   error: null,
 };
 
+// This function fetches featured movies from the TMDB API
 export const fetchFeaturedMovies = createAsyncThunk<
   MovieListResponse,
   FetchPopularParams,
@@ -99,6 +101,7 @@ const featuredMoviesSlice = createSlice({
       .addCase(fetchFeaturedMovies.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'Failed to fetch featured movies';
+        showToast.error(action.payload || 'Failed to fetch featured movies');
       });
   },
 });

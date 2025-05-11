@@ -36,15 +36,6 @@ const SectionHeading = ({ title, subtitle, align = 'left' }: any) => {
           {subtitle}
         </Typography>
       )}
-
-      {/* Horizontal Line */}
-      {/* <Box
-        sx={{
-          height: '2px',
-          width: '100%',
-          backgroundColor: theme.palette.divider,
-        }}
-      /> */}
     </Box>
   );
 };

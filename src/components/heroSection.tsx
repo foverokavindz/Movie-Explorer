@@ -155,9 +155,9 @@ const HeroSection = ({
               py: { xs: 2, md: 2 },
               textTransform: 'none',
               fontSize: { xs: '0.9rem', md: '1rem' },
-              backgroundColor: '#01b4e4', // TMDB-like teal color
+              backgroundColor: 'primary.main', // TMDB-like teal color
               '&:hover': {
-                backgroundColor: '#0099c9',
+                backgroundColor: 'primary.dark',
               },
             }}
             onClick={() => onSubmit(searchTerm)}

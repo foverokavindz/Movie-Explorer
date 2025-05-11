@@ -22,7 +22,7 @@ const AuthLayout = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: 'grey.100',
+        bgcolor: 'background.default',
         px: 2,
         py: { xs: 2, sm: 4 },
       }}

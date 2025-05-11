@@ -25,6 +25,7 @@ import {
   addToWatchlist,
   removeFromWatchlist,
 } from '../redux/slices/watchlistSlice';
+import { getGenreName } from '../utils/movieData';
 
 type MovieCardProps = {
   movie: {
@@ -67,59 +68,17 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   };
 
   const handleCardClick = () => {
-    navigate(`/movie-details/${movieData.id}`);
+    navigate(`/movie-details/${movie.id}`);
   };
-
-  // Default movie data if not provided
-  const defaultMovie = {
-    id: 1,
-    title: 'Dune: Part Two',
-    poster_path: '/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg',
-    vote_average: 8.2,
-    release_date: '2024-02-28',
-    genre_ids: [878, 12], // Sci-fi and adventure
-  };
-
-  // Use provided movie data or defaults
-  const movieData = movie || defaultMovie;
 
   // Format release date to get just the year
-  const releaseYear = new Date(movieData.release_date).getFullYear();
+  const releaseYear = new Date(movie.release_date).getFullYear();
 
   // Convert TMDB rating (0-10) to MUI Rating (0-5)
-  const rating = movieData.vote_average / 2;
-
-  // Map genre IDs to genre names (simplified)
-  const genreMap: { [key: number]: string } = {
-    28: 'Action',
-    12: 'Adventure',
-    16: 'Animation',
-    35: 'Comedy',
-    80: 'Crime',
-    99: 'Documentary',
-    18: 'Drama',
-    10751: 'Family',
-    14: 'Fantasy',
-    36: 'History',
-    27: 'Horror',
-    10402: 'Music',
-    9648: 'Mystery',
-    10749: 'Romance',
-    878: 'Sci-Fi',
-    10770: 'TV Movie',
-    53: 'Thriller',
-    10752: 'War',
-    37: 'Western',
-  };
-
-  // Get the primary genre (or default)
-  const primaryGenre =
-    movieData.genre_ids && movieData.genre_ids.length > 0
-      ? genreMap[movieData.genre_ids[0] as number] || 'Movie'
-      : 'Movie';
+  const rating = movie.vote_average / 2;
 
   // Poster URL (TMDB format)
-  const posterUrl = `https://image.tmdb.org/t/p/w500${movieData.poster_path}`;
+  const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
   return (
     <Card
@@ -144,7 +103,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             component="img"
             height="400"
             image={posterUrl}
-            alt={movieData.title}
+            alt={movie.title}
             sx={{
               objectFit: 'cover',
             }}
@@ -190,7 +149,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
 
           {/* Genre chip */}
           <Chip
-            label={primaryGenre}
+            label={getGenreName(movie.genre_ids[0])}
             size="small"
             color="primary"
             sx={{
@@ -242,7 +201,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              {movieData.watchlistAdded ? (
+              {movie.watchlistAdded ? (
                 <MenuItem
                   onClick={(e) => {
                     e.stopPropagation();
@@ -286,7 +245,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             lineHeight: 1,
           }}
         >
-          {movieData.title}
+          {movie.title}
         </Typography>
 
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
@@ -296,7 +255,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             color="text.secondary"
             sx={{ fontWeight: 500 }}
           >
-            {movieData.vote_average.toFixed(1)}
+            {movie.vote_average.toFixed(1)}
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />

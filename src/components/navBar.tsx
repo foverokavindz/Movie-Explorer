@@ -22,7 +22,7 @@ const pageRoutes = {
   Home: '/home',
   Trending: '/trending',
   'Browse Movies': '/browse-movies',
-  Watchlist: '/watchlists', // Assuming 'Watchlist' maps to the 'bookmarks' route
+  Watchlist: '/watchlists',
 };
 
 const pages = [
@@ -70,7 +70,7 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" sx={{ borderRadius: 0, bgcolor: 'primary.main' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* desktop view */}
@@ -237,51 +237,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
-// <AppBar position="static">
-//   <Toolbar>
-//     {/* Logo */}
-//     <Typography
-//       variant="h6"
-//       noWrap
-//       component="div"
-//       sx={{ display: { xs: 'none', sm: 'block' } }}
-//     >
-//       MovieExplorer
-//     </Typography>
-
-//     {/* Search Bar */}
-//     <Search>
-//       <SearchIconWrapper>
-//         <SearchIcon />
-//       </SearchIconWrapper>
-//       <StyledInputBase
-//         placeholder="Search movies..."
-//         inputProps={{ 'aria-label': 'search' }}
-//       />
-//     </Search>
-
-//     <Box sx={{ flexGrow: 1 }} />
-
-//     {/* Theme Toggle */}
-//     <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-//       <IconButton color="inherit" sx={{ mr: 1 }}>
-//         {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
-//       </IconButton>
-//       <Switch
-//         checked={darkMode}
-//         onChange={handleThemeToggle}
-//         color="default"
-//       />
-//     </Box>
-
-//     {/* Logout Button */}
-//     <Button
-//       color="inherit"
-//       onClick={handleLogout}
-//       startIcon={<LogoutIcon />}
-//     >
-//       Logout
-//     </Button>
-//   </Toolbar>
-// </AppBar>

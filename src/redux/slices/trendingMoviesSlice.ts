@@ -10,10 +10,11 @@ import type {
   MovieListResponse,
   TimeWindow,
 } from '../../types/movietypes';
+import { showToast } from '../../utils/toast';
 
 const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 const API_URL = import.meta.env.VITE_TMDB_URL;
-// Define fetch parameters type
+
 interface FetchTrendingParams {
   timeWindow: TimeWindow;
   page: number;
@@ -37,6 +38,7 @@ const initialState: TrendingMoviesState = {
   error: null,
 };
 
+// This function fetches trending movies from the TMDB API based on the specified time window and page number
 export const fetchTrendingMovies = createAsyncThunk<
   MovieListResponse,
   FetchTrendingParams,
@@ -110,6 +112,7 @@ const trendingMoviesSlice = createSlice({
       .addCase(fetchTrendingMovies.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'Failed to fetch trending movies';
+        showToast.error(action.payload || 'Failed to fetch trending movies');
       });
   },
 });

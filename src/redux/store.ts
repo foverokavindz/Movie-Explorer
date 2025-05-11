@@ -7,13 +7,14 @@ import browseMoviesReducer from './slices/browseMoviesSlice';
 import watchlistReducer from './slices/watchlistSlice';
 import userReducer from './slices/userSlice';
 
-// // Configure persistence
+// Configure persistence
 const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['watchlist', 'user'],
 };
 
+// Combine all reducers into a single root reducer
 const rootReducer = combineReducers({
   trendingMovies: trendingMoviesReducer,
   featuredMovies: featuredMoviesReducer,
@@ -22,8 +23,10 @@ const rootReducer = combineReducers({
   user: userReducer,
 });
 
+// Create a persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Create the Redux store with the persisted reducer
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -38,6 +41,7 @@ export const store = configureStore({
     }),
 });
 
+// Create a persistor for the store
 export const persistor = persistStore(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
